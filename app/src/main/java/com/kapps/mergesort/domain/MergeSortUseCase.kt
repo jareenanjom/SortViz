@@ -23,8 +23,7 @@ class MergeSortUseCase {
         if (listSize <= 1) {
             return list
         }
-        //14 -> 0 .. 6 and 7 .. 13
-        //13 -> 0 .. 6 and 7 .. 12
+
         var leftList = list.slice(0 until (listSize + 1) / 2)
         var rightList = list.slice((listSize + 1) / 2 until listSize)
         leftList = this(leftList, depth + 1)
