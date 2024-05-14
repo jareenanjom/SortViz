@@ -29,6 +29,9 @@
                 android:value="" />
         </activity>
         <activity android:name=".SortingActivity"/>
+        <activity android:name=".BubbleSortActivity"/>
+        <activity android:name=".QuickSortActivity"/>
+        <activity android:name=".SelectionSortActivity"/>
     </application>
 
 </manifest>

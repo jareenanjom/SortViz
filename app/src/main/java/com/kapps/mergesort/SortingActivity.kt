@@ -23,16 +23,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.kapps.mergesort.domain.model.SortState
-import com.kapps.mergesort.presentation.SortViewModel
+import com.kapps.mergesort.presentation.MergeSortViewModel
 import com.kapps.mergesort.ui.theme.QuickSortTheme
 import com.kapps.mergesort.ui.theme.gray
 import com.kapps.mergesort.ui.theme.orange
 
 class SortingActivity : ComponentActivity() {
 
-    private val sortViewModel by viewModels<SortViewModel>()
+    private val mergeSortViewModel by viewModels<MergeSortViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +54,7 @@ class SortingActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
                         itemsIndexed(
-                            sortViewModel.sortInfoUiItemList,
+                            mergeSortViewModel.mergeSortInfoUiItemList,
                             key = { _, it ->
                                 it.id
                             }
@@ -147,8 +145,8 @@ class SortingActivity : ComponentActivity() {
 
                         Button(
                             onClick = {
-                                sortViewModel.listToSort = inputText.text.split(" ").map { it.toInt() }.toMutableList()
-                                sortViewModel.startSorting()
+                                mergeSortViewModel.listToSort = inputText.text.split(" ").map { it.toInt() }.toMutableList()
+                                mergeSortViewModel.startSorting()
                             },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = orange,

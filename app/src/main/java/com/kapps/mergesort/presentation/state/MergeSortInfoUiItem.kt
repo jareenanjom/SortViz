@@ -3,7 +3,7 @@ package com.kapps.mergesort.presentation.state
 import androidx.compose.ui.graphics.Color
 import com.kapps.mergesort.domain.model.SortState
 
-data class SortInfoUiItem(
+data class MergeSortInfoUiItem(
     val id:String,
     val depth:Int,
     val sortState: SortState,

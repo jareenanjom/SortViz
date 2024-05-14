@@ -2,36 +2,23 @@ package com.kapps.mergesort
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kapps.mergesort.domain.model.SortState
-import com.kapps.mergesort.presentation.SortViewModel
 import com.kapps.mergesort.ui.theme.QuickSortTheme
 import com.kapps.mergesort.ui.theme.gray
 import com.kapps.mergesort.ui.theme.orange
-import kotlin.reflect.KClass
 
 class MainActivity : ComponentActivity() {
 
@@ -71,7 +58,7 @@ class MainActivity : ComponentActivity() {
                     Button(
                         onClick = {
                             // Start SortingActivity
-                            val intent = Intent(this@MainActivity, SortingActivity::class.java)
+                            val intent = Intent(this@MainActivity, BubbleSortActivity::class.java)
                             startActivity(intent)
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -89,7 +76,7 @@ class MainActivity : ComponentActivity() {
                         Button(
                             onClick = {
                                 // Start SortingActivity
-                                val intent = Intent(this@MainActivity, SortingActivity::class.java)
+                                val intent = Intent(this@MainActivity, QuickSortActivity::class.java)
                                 startActivity(intent)
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -125,7 +112,7 @@ class MainActivity : ComponentActivity() {
                                 Button(
                                     onClick = {
                                         // Start SortingActivity
-                                        val intent = Intent(this@MainActivity, SortingActivity::class.java)
+                                        val intent = Intent(this@MainActivity, SelectionSortActivity::class.java)
                                         startActivity(intent)
                                     },
                                     colors = ButtonDefaults.buttonColors(
@@ -143,7 +130,7 @@ class MainActivity : ComponentActivity() {
                                     Button(
                                         onClick = {
                                             // Start SortingActivity
-                                            val intent = Intent(this@MainActivity, SortingActivity::class.java)
+                                            val intent = Intent(this@MainActivity, SelectionSortActivity::class.java)
                                             startActivity(intent)
                                         },
                                         colors = ButtonDefaults.buttonColors(

@@ -1,24 +1,22 @@
 package com.kapps.mergesort.presentation
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kapps.mergesort.domain.MergeSortUseCase
-import com.kapps.mergesort.presentation.state.SortInfoUiItem
+import com.kapps.mergesort.presentation.state.MergeSortInfoUiItem
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class SortViewModel(
+class MergeSortViewModel(
     private val mergeSortUseCase: MergeSortUseCase = MergeSortUseCase()
 ) :ViewModel() {
 
     var listToSort = mutableListOf<Int>()
 
-    var sortInfoUiItemList = mutableStateListOf<SortInfoUiItem>()
+    var mergeSortInfoUiItemList = mutableStateListOf<MergeSortInfoUiItem>()
 
     init {
         for(i in 0 until 8){
@@ -29,7 +27,7 @@ class SortViewModel(
     }
 
     fun startSorting(){
-        sortInfoUiItemList.clear()
+        mergeSortInfoUiItemList.clear()
         subscribeToSortChanges()
         viewModelScope.launch {
             mergeSortUseCase(listToSort, 0)
@@ -41,13 +39,13 @@ class SortViewModel(
         job?.cancel()
         job = viewModelScope.launch {
             mergeSortUseCase.sortFlow.collect { sortInfo ->
-                val depthAlreadyExistListIndex = sortInfoUiItemList.indexOfFirst {
+                val depthAlreadyExistListIndex = mergeSortInfoUiItemList.indexOfFirst {
                     it.depth == sortInfo.depth && it.sortState == sortInfo.sortState
                 }
 
                 if(depthAlreadyExistListIndex == -1){
-                    sortInfoUiItemList.add(
-                        SortInfoUiItem(
+                    mergeSortInfoUiItemList.add(
+                        MergeSortInfoUiItem(
                             id = UUID.randomUUID().toString(),
                             depth = sortInfo.depth,
                             sortState = sortInfo.sortState,
@@ -60,15 +58,15 @@ class SortViewModel(
                         )
                     )
                 }else{
-                    val currentPartList = sortInfoUiItemList[depthAlreadyExistListIndex].sortParts.toMutableList()
+                    val currentPartList = mergeSortInfoUiItemList[depthAlreadyExistListIndex].sortParts.toMutableList()
                     currentPartList.add(sortInfo.sortParts)
-                    sortInfoUiItemList.set(
+                    mergeSortInfoUiItemList.set(
                         depthAlreadyExistListIndex,
-                        sortInfoUiItemList[depthAlreadyExistListIndex].copy(sortParts = currentPartList)
+                        mergeSortInfoUiItemList[depthAlreadyExistListIndex].copy(sortParts = currentPartList)
                     )
                 }
 
-                sortInfoUiItemList.sortedWith(
+                mergeSortInfoUiItemList.sortedWith(
                     compareBy(
                         {
                             it.sortState
