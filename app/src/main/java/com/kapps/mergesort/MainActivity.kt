@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,117 +36,40 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(gray)
                         .padding(40.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Image(
+                        painter = painterResource(id = R.mipmap.algohomeicon), // Replace with your logo resource
+                        contentDescription = "App Logo",
+                        modifier = Modifier.size(300.dp)
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = "a game-based algorithm educational app",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF9E1711),
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
                     Button(
                         onClick = {
-                            // Start SortingActivity
-                            val intent = Intent(this@MainActivity, SortingActivity::class.java)
+                            val intent = Intent(this@MainActivity, AlgorithmsActivity::class.java)
                             startActivity(intent)
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = orange,
                             contentColor = Color.White
                         ),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.defaultMinSize()
                     ) {
                         Text(
-                            "Merge Sort",
+                            text = "START",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    Button(
-                        onClick = {
-                            // Start SortingActivity
-                            val intent = Intent(this@MainActivity, BubbleSortActivity::class.java)
-                            startActivity(intent)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = orange,
-                            contentColor = Color.White
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            "Bubble Sort",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                        Button(
-                            onClick = {
-                                // Start SortingActivity
-                                val intent = Intent(this@MainActivity, QuickSortActivity::class.java)
-                                startActivity(intent)
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = orange,
-                                contentColor = Color.White
-                            ),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(
-                                "Quick Sort",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                            Button(
-                                onClick = {
-                                    // Start SortingActivity
-                                    val intent = Intent(this@MainActivity, SortingActivity::class.java)
-                                    startActivity(intent)
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = orange,
-                                    contentColor = Color.White
-                                ),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(
-                                    "Insertion Sort",
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                                Button(
-                                    onClick = {
-                                        // Start SortingActivity
-                                        val intent = Intent(this@MainActivity, SelectionSortActivity::class.java)
-                                        startActivity(intent)
-                                    },
-                                    colors = ButtonDefaults.buttonColors(
-                                        backgroundColor = orange,
-                                        contentColor = Color.White
-                                    ),
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        "Selection Sort",
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                                    Button(
-                                        onClick = {
-                                            // Start SortingActivity
-                                            val intent = Intent(this@MainActivity, SelectionSortActivity::class.java)
-                                            startActivity(intent)
-                                        },
-                                        colors = ButtonDefaults.buttonColors(
-                                            backgroundColor = orange,
-                                            contentColor = Color.White
-                                        ),
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Text(
-                                            "Heap Sort",
-                                            fontSize = 18.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    }
                 }
             }
         }

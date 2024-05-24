@@ -37,10 +37,8 @@ import com.kapps.mergesort.presentation.MergeSortViewModel
 import com.kapps.mergesort.ui.theme.QuickSortTheme
 import com.kapps.mergesort.ui.theme.gray
 import com.kapps.mergesort.ui.theme.orange
-import kotlin.random.Random
-import kotlin.system.measureTimeMillis
 
-class SortingActivity : ComponentActivity() {
+class MergeSortActivity : ComponentActivity() {
 
     private val mergeSortViewModel by viewModels<MergeSortViewModel>()
 
