@@ -27,6 +27,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.Entry
@@ -56,7 +57,9 @@ class MergeSortActivity : ComponentActivity() {
 
     @Composable
     fun MergeSortApp() {
-        val context = LocalContext.current
+        val mergeSortViewModel: MergeSortViewModel = viewModel()
+        val currentPseudocodeStep by mergeSortViewModel.currentPseudocodeStep
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -141,8 +144,8 @@ class MergeSortActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(gray)
-                    .padding(20.dp)
-                    .align(Alignment.BottomCenter),
+                    .align(Alignment.BottomCenter)
+                    .padding(15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -187,8 +190,9 @@ class MergeSortActivity : ComponentActivity() {
                 var inputSize by remember { mutableStateOf(10) }
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(15.dp)
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Button(
                         onClick = {
@@ -228,7 +232,7 @@ class MergeSortActivity : ComponentActivity() {
                 }
 
                 if (isPseudocodeVisible) {
-                    MergeSortPseudocode()
+                    MergeSortPseudocode(currentStep = currentPseudocodeStep)
                 }
 
                 Button(
@@ -266,14 +270,15 @@ class MergeSortActivity : ComponentActivity() {
                         onValueChange = { newValue ->
                             inputSize = newValue.toInt()
                         },
-                        valueRange = 1f..500f,
-                        steps = 499,
+                        valueRange = 1f..100f,
+                        steps = 99,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
         }
     }
+
 
     @Composable
     fun LineChartView(
@@ -299,8 +304,12 @@ class MergeSortActivity : ComponentActivity() {
         LineChartView(
             context = LocalContext.current,
             configureChart = {
-                data = generateTheoreticalLineData(inputSize).apply {
-                    addDataSet(generateLineData(inputSize).getDataSetByIndex(0))
+                val theoreticalLineData = generateTheoreticalLineData(inputSize)
+                val randomLineData = generateLineData(inputSize)
+
+                data = LineData().apply {
+                    addDataSet(theoreticalLineData.getDataSetByIndex(0))
+                    addDataSet(randomLineData.getDataSetByIndex(0))
                 }
                 this.description = description
                 invalidate()
@@ -321,31 +330,39 @@ class MergeSortActivity : ComponentActivity() {
     }
 
     @Composable
-    fun MergeSortPseudocode() {
+    fun MergeSortPseudocode(currentStep: Int) {
         val pseudocodeText = AnnotatedString.Builder().apply {
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                 append("mergeSort(arr[], l,  r) ")
             }
             append("  ---- T(n) \n")
-            append("If r > l\n")
+            withStyle(style = SpanStyle(fontWeight = if (currentStep == 1) FontWeight.Bold else FontWeight.Normal, background = if (currentStep == 1) Color.Yellow else Color.Transparent)) {
+                append("If r > l\n")
+            }
             append("    1. Find the middle point to divide the array into two halves:\n")
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                 append("        middle m = l + (r - l) / 2 ")
             }
             append("  ---- O(1) \n")
-            append("    2. Call mergeSort for first half:\n")
+            withStyle(style = SpanStyle(fontWeight = if (currentStep == 2) FontWeight.Bold else FontWeight.Normal, background = if (currentStep == 2) Color.Yellow else Color.Transparent)) {
+                append("    2. Call mergeSort for first half:\n")
+            }
             append("        ")
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                 append("Call mergeSort(arr, l, m)")
             }
             append("  ---- T(n/2) \n")
-            append("    3. Call mergeSort for second half:\n")
+            withStyle(style = SpanStyle(fontWeight = if (currentStep == 3) FontWeight.Bold else FontWeight.Normal, background = if (currentStep == 3) Color.Yellow else Color.Transparent)) {
+                append("    3. Call mergeSort for second half:\n")
+            }
             append("        ")
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                 append("Call mergeSort(arr, m + 1, r)")
             }
             append("  ---- T(n/2) \n")
-            append("    4. Merge the two halves sorted in step 2 and 3:\n")
+            withStyle(style = SpanStyle(fontWeight = if (currentStep == 4) FontWeight.Bold else FontWeight.Normal, background = if (currentStep == 4) Color.Yellow else Color.Transparent)) {
+                append("    4. Merge the two halves sorted in step 2 and 3:\n")
+            }
             append("        ")
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                 append("Call merge(arr, l, m, r)")
@@ -366,28 +383,34 @@ class MergeSortActivity : ComponentActivity() {
         Text(text = pseudocodeText, fontSize = 16.sp)
     }
 
+
     private fun generateRandomLineData(size: Int): LineData {
         val entries = List(size) {
-            val x = it.toFloat()
+            val x = (it + 1).toFloat()
             val y = (x * ln(x) + Random.nextFloat() * 0.2 * x * ln(x)).toFloat()
             Entry(x, y)
         }
         val dataSet = LineDataSet(entries, "Test Points").apply {
-            color = Color.Blue.toArgb()
+            color = Color.Blue.toArgb() // Line color
             valueTextColor = Color.Blue.toArgb()
+            setCircleColor(Color.Green.toArgb()) // Plot points color
+            circleRadius = 4f // Plot points radius
         }
         return LineData(dataSet)
     }
 
     private fun generateTheoreticalLineData(size: Int): LineData {
         val entries = List(size) {
-            val x = it.toFloat()
+            val x = (it + 1).toFloat()
             Entry(x, x * ln(x))
         }
         val dataSet = LineDataSet(entries, "O(n log n)").apply {
-            color = Color.Red.toArgb()
+            color = Color.Red.toArgb() // Line color
             valueTextColor = Color.Red.toArgb()
+            setCircleColor(Color.Yellow.toArgb()) // Plot points color
+            circleRadius = 4f // Plot points radius
         }
         return LineData(dataSet)
     }
+
 }
