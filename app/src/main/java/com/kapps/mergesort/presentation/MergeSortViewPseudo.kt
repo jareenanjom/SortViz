@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class MergeSortViewModel(
+class MergeSortViewPseudo(
     private val mergeSortUseCase: MergeSortUseCase = MergeSortUseCase()
 ) : ViewModel() {
 
@@ -30,15 +30,15 @@ class MergeSortViewModel(
         }
     }
 
-    fun startSorting() {
+
+
+    fun startSortingPseudo() {
         mergeSortInfoUiItemList.clear()
         subscribeToSortChanges()
         viewModelScope.launch {
-            mergeSortUseCase(listToSort, 0)
+            mergeSort(listToSort, 0, listToSort.size - 1, 0)
         }
     }
-
-
 
     private var job: Job? = null
     private fun subscribeToSortChanges() {
@@ -164,6 +164,6 @@ class MergeSortViewModel(
 
     private suspend fun updatePseudocodeStep(step: Int) {
         currentPseudocodeStep.value = step
-        delay(1000) // Adjust the delay time as needed
+        delay(1900) // Adjust the delay time as needed
     }
 }

@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -34,11 +33,13 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.kapps.mergesort.presentation.MergeSortViewModel
+import com.kapps.mergesort.presentation.MergeSortViewPseudo
 import com.kapps.mergesort.ui.theme.QuickSortTheme
 import com.kapps.mergesort.ui.theme.gray
 import com.kapps.mergesort.ui.theme.orange
 import kotlin.math.ln
 import kotlin.random.Random
+
 class MergeSortActivity : ComponentActivity() {
 
     private val mergeSortViewModel by viewModels<MergeSortViewModel>()
@@ -58,20 +59,22 @@ class MergeSortActivity : ComponentActivity() {
     @Composable
     fun MergeSortApp() {
         val mergeSortViewModel: MergeSortViewModel = viewModel()
-        val currentPseudocodeStep by mergeSortViewModel.currentPseudocodeStep
+        val mergeSortViewPseudo: MergeSortViewPseudo = viewModel()
+        val currentPseudocodeStep by mergeSortViewPseudo.currentPseudocodeStep
 
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(gray)
-                .padding(10.dp),
-            contentAlignment = Alignment.Center
+                .padding(1.dp)
         ) {
+            // Element Visualization Process
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.TopCenter),
-                verticalArrangement = Arrangement.spacedBy(7.dp),
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(2.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 itemsIndexed(
@@ -86,7 +89,7 @@ class MergeSortActivity : ComponentActivity() {
                             "Dividing",
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
-                            fontSize = 26.sp,
+                            fontSize = 22.sp,
                             modifier = Modifier
                                 .padding(bottom = 10.dp)
                                 .fillMaxWidth(),
@@ -98,7 +101,7 @@ class MergeSortActivity : ComponentActivity() {
                             "Merging",
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
-                            fontSize = 26.sp,
+                            fontSize = 22.sp,
                             modifier = Modifier
                                 .padding(bottom = 10.dp)
                                 .fillMaxWidth(),
@@ -140,14 +143,22 @@ class MergeSortActivity : ComponentActivity() {
                 }
             }
 
+            // Pseudocode Visualization
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(gray)
-                    .align(Alignment.BottomCenter)
-                    .padding(15.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                    .weight(0.6f)
+                    .padding(5.dp)
+            ) {
+                MergeSortPseudocode(currentStep = currentPseudocodeStep)
+            }
+
+            // Buttons and Additional Components
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(gray),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 var inputText by remember { mutableStateOf(TextFieldValue()) }
 
@@ -160,6 +171,7 @@ class MergeSortActivity : ComponentActivity() {
                         Text("Enter numbers separated by space")
                     },
                     modifier = Modifier.fillMaxWidth()
+
                 )
 
                 Button(
@@ -167,6 +179,7 @@ class MergeSortActivity : ComponentActivity() {
                         mergeSortViewModel.listToSort =
                             inputText.text.split(" ").map { it.toInt() }.toMutableList()
                         mergeSortViewModel.startSorting()
+                        mergeSortViewPseudo.startSortingPseudo()
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = orange,
@@ -176,16 +189,14 @@ class MergeSortActivity : ComponentActivity() {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        "Start sort",
-                        fontSize = 22.sp,
+                        "Start Sort",
+                        fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
 
                 var isDescriptionVisible by remember { mutableStateOf(false) }
-                var isPseudocodeVisible by remember { mutableStateOf(false) }
                 var isButtonClicked by remember { mutableStateOf(false) }
                 var inputSize by remember { mutableStateOf(10) }
 
@@ -201,27 +212,13 @@ class MergeSortActivity : ComponentActivity() {
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = orange,
                             contentColor = Color.White
-                        )
+                        ),
+                                modifier = Modifier
+                                .fillMaxWidth()
                     ) {
                         Text(
                             "Description",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    Button(
-                        onClick = {
-                            isPseudocodeVisible = !isPseudocodeVisible
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = orange,
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(
-                            "Pseudocode",
-                            fontSize = 18.sp,
+                            fontSize = 15.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -229,10 +226,6 @@ class MergeSortActivity : ComponentActivity() {
 
                 if (isDescriptionVisible) {
                     MergeSortDescription()
-                }
-
-                if (isPseudocodeVisible) {
-                    MergeSortPseudocode(currentStep = currentPseudocodeStep)
                 }
 
                 Button(
@@ -248,7 +241,7 @@ class MergeSortActivity : ComponentActivity() {
                 ) {
                     Text(
                         "Time Complexity Graph",
-                        fontSize = 22.sp,
+                        fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -263,21 +256,21 @@ class MergeSortActivity : ComponentActivity() {
                         inputSize = inputSize
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
 
                     Slider(
                         value = inputSize.toFloat(),
                         onValueChange = { newValue ->
                             inputSize = newValue.toInt()
                         },
-                        valueRange = 1f..100f,
-                        steps = 99,
+                        valueRange = 1f..50f,
+                        steps = 49,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
         }
     }
+
 
 
     @Composable
@@ -325,64 +318,45 @@ class MergeSortActivity : ComponentActivity() {
         Text(
             text = descriptionText,
             fontSize = 16.sp,
-            modifier = Modifier.padding(top = 10.dp)
+            color = Color.White,
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
         )
     }
 
     @Composable
     fun MergeSortPseudocode(currentStep: Int) {
-        val pseudocodeText = AnnotatedString.Builder().apply {
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("mergeSort(arr[], l,  r) ")
-            }
-            append("  ---- T(n) \n")
-            withStyle(style = SpanStyle(fontWeight = if (currentStep == 1) FontWeight.Bold else FontWeight.Normal, background = if (currentStep == 1) Color.Yellow else Color.Transparent)) {
-                append("If r > l\n")
-            }
-            append("    1. Find the middle point to divide the array into two halves:\n")
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("        middle m = l + (r - l) / 2 ")
-            }
-            append("  ---- O(1) \n")
-            withStyle(style = SpanStyle(fontWeight = if (currentStep == 2) FontWeight.Bold else FontWeight.Normal, background = if (currentStep == 2) Color.Yellow else Color.Transparent)) {
-                append("    2. Call mergeSort for first half:\n")
-            }
-            append("        ")
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("Call mergeSort(arr, l, m)")
-            }
-            append("  ---- T(n/2) \n")
-            withStyle(style = SpanStyle(fontWeight = if (currentStep == 3) FontWeight.Bold else FontWeight.Normal, background = if (currentStep == 3) Color.Yellow else Color.Transparent)) {
-                append("    3. Call mergeSort for second half:\n")
-            }
-            append("        ")
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("Call mergeSort(arr, m + 1, r)")
-            }
-            append("  ---- T(n/2) \n")
-            withStyle(style = SpanStyle(fontWeight = if (currentStep == 4) FontWeight.Bold else FontWeight.Normal, background = if (currentStep == 4) Color.Yellow else Color.Transparent)) {
-                append("    4. Merge the two halves sorted in step 2 and 3:\n")
-            }
-            append("        ")
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("Call merge(arr, l, m, r)")
-            }
-            append("  ---- O(n) \n\n")
-            append("    T(n) = 2 * T(n/2) + O(n) \n")
-            append("    ")
-            withStyle(
-                style = SpanStyle(
-                    fontStyle = FontStyle.Italic,
-                    color = Color.Gray
-                )
-            ) {
-                append("Time Complexity = O(n log n)")
-            }
-        }.toAnnotatedString()
+        val pseudocode = listOf(
+            "MergeSort(arr, left, right):",
+            "    if left > right return",
+            "    Find mid point to divide array into two halves:\nmid = (left + right) / 2",
+            "    Call mergeSort for first half:\nmergeSort(arr, left, mid)",
+            "    Call mergeSort for second half:\nmergeSort(arr, mid + 1, right)",
+            "    Merge the two halves sorted:\nmerge(arr, left, mid, right)"
+        )
 
-        Text(text = pseudocodeText, fontSize = 16.sp)
+        val highlightedPseudocode = pseudocode.mapIndexed { index, line ->
+            if (index == currentStep) {
+                AnnotatedString.Builder().apply {
+                    withStyle(style = SpanStyle(color = Color.Yellow, fontWeight = FontWeight.Bold)) {
+                        append(line)
+                    }
+                }.toAnnotatedString()
+            } else {
+                AnnotatedString(line)
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(gray, RoundedCornerShape(8.dp))
+                .padding(16.dp)
+        ) {
+            for (line in highlightedPseudocode) {
+                Text(text = line, fontSize = 14.sp, color = Color.White)
+            }
+        }
     }
-
 
     private fun generateRandomLineData(size: Int): LineData {
         val entries = List(size) {
@@ -411,6 +385,11 @@ class MergeSortActivity : ComponentActivity() {
             circleRadius = 4f // Plot points radius
         }
         return LineData(dataSet)
+    }
+
+    private fun simulateMergeSortTime(size: Int): Float {
+        val random = Random(size)
+        return random.nextFloat() * size * ln(size.toDouble()).toFloat()
     }
 
 }

@@ -12,13 +12,14 @@ class MergeSortUseCase {
     val sortFlow = MutableSharedFlow<SortInfo>()
 
     suspend operator fun invoke(list: List<Int>, depth:Int):List<Int> {
-        delay(1500)
+
         sortFlow.emit(SortInfo(
             id = UUID.randomUUID().toString(),
             depth = depth,
             sortParts = list,
             sortState = SortState.DIVIDED,
         ))
+        delay(4000)
         val listSize = list.size
         if (listSize <= 1) {
             return list
@@ -35,21 +36,25 @@ class MergeSortUseCase {
 
         val mergeList = mutableListOf<Int>()
         while (leftList.isNotEmpty() && rightList.isNotEmpty()){
+
             if(leftList.first() <= rightList.first()){
                 mergeList.add(mergeList.size,leftList.removeFirst())
             }else{
                 mergeList.add(mergeList.size,rightList.removeFirst())
             }
         }
+
         mergeList.addAll(leftList)
+        delay(4000)
         mergeList.addAll(rightList)
-        delay(1500)
+
         sortFlow.emit(SortInfo(
             UUID.randomUUID().toString(),
             depth = depth,
             sortParts = mergeList,
             sortState = SortState.MERGED,
         ))
+
         return mergeList
     }
 }
