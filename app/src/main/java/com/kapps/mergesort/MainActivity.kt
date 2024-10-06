@@ -40,22 +40,22 @@ class MainActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
-                        painter = painterResource(id = R.mipmap.algohomeicon), // Replace with your logo resource
+                        painter = painterResource(id = R.mipmap.sortvizicon), // Replace with your logo resource
                         contentDescription = "App Logo",
                         modifier = Modifier.size(300.dp)
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        text = "a game-based algorithm educational app",
-                        fontSize = 16.sp,
+                        text = "A Mobile Application for Visualizing Sorting Algorithms",
+                        fontSize = 25.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF9E1711),
+                        color = Color(0xFFAEC6CF),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Button(
                         onClick = {
-                            val intent = Intent(this@MainActivity, AlgorithmsActivity::class.java)
+                            val intent = Intent(this@MainActivity, SortActivity::class.java)
                             startActivity(intent)
                         },
                         colors = ButtonDefaults.buttonColors(

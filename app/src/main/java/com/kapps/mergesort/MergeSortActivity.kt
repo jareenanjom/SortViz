@@ -181,9 +181,10 @@ class MergeSortActivity : ComponentActivity() {
                         mergeSortViewModel.startSorting()
                         mergeSortViewPseudo.startSortingPseudo()
                     },
+                    shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = orange,
-                        contentColor = Color.White
+                        backgroundColor = Color(0xFFFF00FF),
+                        contentColor = Color.Black
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -198,6 +199,7 @@ class MergeSortActivity : ComponentActivity() {
 
                 var isDescriptionVisible by remember { mutableStateOf(false) }
                 var isButtonClicked by remember { mutableStateOf(false) }
+                var isSpaceButtonClicked by remember { mutableStateOf(false) }
                 var inputSize by remember { mutableStateOf(10) }
 
                 Row(
@@ -209,9 +211,10 @@ class MergeSortActivity : ComponentActivity() {
                         onClick = {
                             isDescriptionVisible = !isDescriptionVisible
                         },
+                        shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = orange,
-                            contentColor = Color.White
+                            backgroundColor = Color(0xFF50d8ec),
+                            contentColor = Color.Black
                         ),
                                 modifier = Modifier
                                 .fillMaxWidth()
@@ -228,34 +231,79 @@ class MergeSortActivity : ComponentActivity() {
                     MergeSortDescription()
                 }
 
-                Button(
-                    onClick = {
-                        isButtonClicked = !isButtonClicked
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = orange,
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween // Align buttons side by side
                 ) {
-                    Text(
-                        "Time Complexity Graph",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    // Time Complexity Button
+                    Button(
+                        onClick = {
+                            isButtonClicked = !isButtonClicked
+                        },
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFFc0f4b8),
+                            contentColor = Color.Black
+                        ),
+                        modifier = Modifier
+                            .weight(1f) // Take up equal space
+                    ) {
+                        Text(
+                            "Time Complexity",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    // Space Complexity Button
+                    Button(
+                        onClick = {
+                            isSpaceButtonClicked = !isSpaceButtonClicked
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFFfeffbe),
+                            contentColor = Color.Black
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier
+                            .weight(1f) // Take up equal space
+                    ) {
+                        Text(
+                            "Space Complexity",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
 
+// Show Time Complexity Graph
                 if (isButtonClicked) {
                     MergeSortGraph(
                         generateLineData = { size -> generateRandomLineData(size) },
                         generateTheoreticalLineData = { size -> generateTheoreticalLineData(size) },
-                        description = Description().apply {
-                            text = "Merge Sort Time Complexity"
-                        },
+
                         inputSize = inputSize
                     )
 
+                    Slider(
+                        value = inputSize.toFloat(),
+                        onValueChange = { newValue ->
+                            inputSize = newValue.toInt()
+                        },
+                        valueRange = 1f..50f,
+                        steps = 49,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+// Show Space Complexity Graph
+                if (isSpaceButtonClicked) {
+                    MergeSortGraph(
+                        generateLineData = { size -> generateSpaceComplexityData(size) }, // New function for space complexity
+                        generateTheoreticalLineData = { size -> generateTheoreticalSpaceComplexityData(size) }, // New function for theoretical space complexity
+
+                        inputSize = inputSize
+                    )
 
                     Slider(
                         value = inputSize.toFloat(),
@@ -291,7 +339,6 @@ class MergeSortActivity : ComponentActivity() {
     fun MergeSortGraph(
         generateLineData: (Int) -> LineData,
         generateTheoreticalLineData: (Int) -> LineData,
-        description: Description,
         inputSize: Int
     ) {
         LineChartView(
@@ -313,7 +360,7 @@ class MergeSortActivity : ComponentActivity() {
 
     @Composable
     fun MergeSortDescription() {
-        val descriptionText = "Merge Sort is a divide-and-conquer algorithm that divides the array into halves, sorts them, and merges them. Its time complexity is O(n log n)."
+        val descriptionText = "Merge Sort is a divide-and-conquer algorithm that divides the array into halves, sorts them, and merges them. \n Merge sort is a stable sorting algorithm. This means that when two elements have the same key (in terms of sorting criteria), their original relative order in the input is preserved in the output."
 
         Text(
             text = descriptionText,
@@ -379,6 +426,35 @@ class MergeSortActivity : ComponentActivity() {
             Entry(x, x * ln(x))
         }
         val dataSet = LineDataSet(entries, "O(n log n)").apply {
+            color = Color.Red.toArgb() // Line color
+            valueTextColor = Color.Red.toArgb()
+            setCircleColor(Color.Yellow.toArgb()) // Plot points color
+            circleRadius = 4f // Plot points radius
+        }
+        return LineData(dataSet)
+    }
+
+    private fun generateSpaceComplexityData(size: Int): LineData {
+        val entries = List(size) {
+            val x = (it + 1).toFloat()
+            val y = (x  + Random.nextFloat() * 0.2 * x).toFloat()
+            Entry(x, y)
+        }
+        val dataSet = LineDataSet(entries, "Test Points").apply {
+            color = Color.Blue.toArgb() // Line color
+            valueTextColor = Color.Blue.toArgb()
+            setCircleColor(Color.Green.toArgb()) // Plot points color
+            circleRadius = 4f // Plot points radius
+        }
+        return LineData(dataSet)
+    }
+
+    private fun generateTheoreticalSpaceComplexityData(size: Int): LineData {
+        val entries = List(size) {
+            val x = (it + 1).toFloat()
+            Entry(x, x )
+        }
+        val dataSet = LineDataSet(entries, "O(n)").apply {
             color = Color.Red.toArgb() // Line color
             valueTextColor = Color.Red.toArgb()
             setCircleColor(Color.Yellow.toArgb()) // Plot points color

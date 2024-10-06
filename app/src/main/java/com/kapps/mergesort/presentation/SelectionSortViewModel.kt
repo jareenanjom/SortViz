@@ -15,7 +15,11 @@ import java.util.*
 class SelectionSortViewModel(
     private val selectionSortUseCase: SelectionSortUseCase = SelectionSortUseCase()
 ) : ViewModel() {
-
+    private fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
+        val temp = this[index1]
+        this[index1] = this[index2]
+        this[index2] = temp
+    }
     var listToSort = mutableStateListOf<BubbleListUiItem>()
 
     fun initializeListWithInput(input: String) {
@@ -43,16 +47,19 @@ class SelectionSortViewModel(
         viewModelScope.launch {
             selectionSortUseCase(listToSort.map { it.value }.toMutableList()).collect { swapInfo ->
                 val currentItemIndex = swapInfo.currentItem
-                val shouldSwap = swapInfo.shouldSwap
+                val minItemIndex = swapInfo.minItemIndex
 
+                // Highlight the currently compared item
                 listToSort.forEachIndexed { index, bubbleListUiItem ->
-                    listToSort[index] = bubbleListUiItem.copy(isCurrentlyCompared = index == currentItemIndex)
+                    listToSort[index] = bubbleListUiItem.copy(isCurrentlyCompared = index == currentItemIndex || index == minItemIndex)
                 }
 
-                if (shouldSwap) {
-                    listToSort.swap(currentItemIndex, currentItemIndex + 1)
+                // Perform the swap if necessary
+                if (currentItemIndex != minItemIndex) {
+                    listToSort.swap(currentItemIndex, minItemIndex)
                 }
             }
         }
     }
+
 }

@@ -15,6 +15,7 @@ class SortViewModel(
 ) :ViewModel() {
 
     var listToSort = mutableStateListOf<BubbleListUiItem>()
+    //var listToSort = mutableStateListOf<Int>()
 
     // Function to initialize the list with user input
     fun initializeListWithInput(input: String) {
@@ -44,24 +45,32 @@ class SortViewModel(
     }
 
 
-    fun startSorting(){
+    fun startSorting() {
         viewModelScope.launch {
             bubbleSortUseCase(listToSort.map { listUiItem ->
                 listUiItem.value
-            }.toMutableList()).collect{ swapInfo ->
+            }.toMutableList()).collect { swapInfo ->
                 val currentItemIndex = swapInfo.currentItem
-                listToSort[currentItemIndex] = listToSort[currentItemIndex].copy(isCurrentlyCompared = true)
-                listToSort[currentItemIndex+1] = listToSort[currentItemIndex+1].copy(isCurrentlyCompared = true)
+                val nextItemIndex = currentItemIndex + 1
 
-                if(swapInfo.shouldSwap){
-                    val firstItem = listToSort[currentItemIndex].copy(isCurrentlyCompared = false)
-                    listToSort[currentItemIndex] = listToSort[currentItemIndex+1].copy(isCurrentlyCompared = false)
-                    listToSort[currentItemIndex+1] = firstItem
-                }
-                if(swapInfo.hadNoEffect){
+                // Update comparison states
+                listToSort[currentItemIndex] = listToSort[currentItemIndex].copy(isCurrentlyCompared = true)
+                listToSort[nextItemIndex] = listToSort[nextItemIndex].copy(isCurrentlyCompared = true)
+
+                delay(500) // Wait for some time to visualize the comparison
+
+                if (swapInfo.shouldSwap) {
+                    // Perform the swap in the UI list
+                    val tempItem = listToSort[currentItemIndex]
+                    listToSort[currentItemIndex] = listToSort[nextItemIndex].copy(isCurrentlyCompared = false)
+                    listToSort[nextItemIndex] = tempItem.copy(isCurrentlyCompared = false)
+                } else {
+                    // No swap needed, just reset comparison state
                     listToSort[currentItemIndex] = listToSort[currentItemIndex].copy(isCurrentlyCompared = false)
-                    listToSort[currentItemIndex+1] = listToSort[currentItemIndex+1].copy(isCurrentlyCompared = false)
+                    listToSort[nextItemIndex] = listToSort[nextItemIndex].copy(isCurrentlyCompared = false)
                 }
+
+                delay(500) // Wait for some time to visualize the swap or no effect
             }
         }
     }

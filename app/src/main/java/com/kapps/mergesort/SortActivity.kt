@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kapps.mergesort.InsertionSortActivity
 import com.kapps.mergesort.ui.theme.QuickSortTheme
 import com.kapps.mergesort.ui.theme.gray
 import com.kapps.mergesort.ui.theme.lightred
@@ -39,10 +40,10 @@ class SortActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Sorting",
-                        fontSize = 24.sp,
+                        text = "Choose your algorithm!",
+                        fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF9E1711),
+                        color = Color(0xFF668794),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Spacer(modifier = Modifier.height(20.dp))
@@ -56,7 +57,7 @@ class SortActivity : ComponentActivity() {
                             contentColor = Color.White
                         ),
                         modifier = Modifier.fillMaxWidth()
-                            .height(50.dp)
+                            .height(60.dp)
                     ) {
                         Text(
                             "Merge Sort",
@@ -71,10 +72,10 @@ class SortActivity : ComponentActivity() {
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = lightred,
-                            contentColor = Color.White
+                            contentColor = Color(0xFF668794)
                         ),
                         modifier = Modifier.fillMaxWidth()
-                            .height(50.dp)
+                            .height(60.dp)
                     ) {
                         Text(
                             "Bubble Sort",
@@ -92,7 +93,7 @@ class SortActivity : ComponentActivity() {
                             contentColor = Color.White
                         ),
                         modifier = Modifier.fillMaxWidth()
-                            .height(50.dp)
+                            .height(60.dp)
                     ) {
                         Text(
                             "Quick Sort",
@@ -107,10 +108,10 @@ class SortActivity : ComponentActivity() {
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = lightred,
-                            contentColor = Color.White
+                            contentColor = Color(0xFF668794)
                         ),
                         modifier = Modifier.fillMaxWidth()
-                            .height(50.dp)
+                            .height(60.dp)
                     ) {
                         Text(
                             "Insertion Sort",
@@ -128,7 +129,7 @@ class SortActivity : ComponentActivity() {
                             contentColor = Color.White
                         ),
                         modifier = Modifier.fillMaxWidth()
-                            .height(50.dp)
+                            .height(60.dp)
                     ) {
                         Text(
                             "Selection Sort",
@@ -136,24 +137,7 @@ class SortActivity : ComponentActivity() {
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    Button(
-                        onClick = {
-                            val intent = Intent(this@SortActivity, HeapSortActivity::class.java)
-                            startActivity(intent)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = lightred,
-                            contentColor = Color.White
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                            .height(50.dp)
-                    ) {
-                        Text(
-                            "Heap Sort",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+
                 }
             }
         }

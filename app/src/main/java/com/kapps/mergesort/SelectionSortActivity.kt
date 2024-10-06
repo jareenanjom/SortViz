@@ -1,5 +1,6 @@
 package com.kapps.mergesort
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,7 +30,19 @@ import com.kapps.mergesort.ui.theme.gray
 import com.kapps.mergesort.ui.theme.orange
 import androidx.compose.runtime.*
 import androidx.compose.material.Text
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.viewinterop.AndroidView
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.kapps.mergesort.presentation.SelectionSortViewModel
+import kotlin.math.ln
+import kotlin.random.Random
 
 
 class SelectionSortActivity : ComponentActivity() {
@@ -67,7 +80,10 @@ class SelectionSortActivity : ComponentActivity() {
                     Button(onClick = {
                         // Pass the input text to the view model to initialize the list
                         sortViewModel.initializeListWithInput(inputText)
-                    }, colors = ButtonDefaults.buttonColors(backgroundColor = orange)
+                    },
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFF00FF)),
+
                     ) {
                         Text(
                             "Enter",
@@ -78,7 +94,8 @@ class SelectionSortActivity : ComponentActivity() {
 
                     Button(onClick = {
                         sortViewModel.startSorting()
-                    }, colors = ButtonDefaults.buttonColors(backgroundColor = orange)
+                    }, shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFF00FF))
                     ) {
                         Text(
                             "Sort List",
@@ -121,38 +138,268 @@ class SelectionSortActivity : ComponentActivity() {
                             }
                         }
                     }
+                    var isDescriptionVisible by remember { mutableStateOf(false) }
+                    var isButtonClicked by remember { mutableStateOf(false) }
+                    var isSpaceButtonClicked by remember { mutableStateOf(false) }
+                    var inputSize by remember { mutableStateOf(10) }
+
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         Button(
                             onClick = {
-                                // Handle Description button click
-                                // Show description
-                                // This is where you would handle showing the description
+                                isDescriptionVisible = !isDescriptionVisible
                             },
-                            colors = ButtonDefaults.buttonColors(backgroundColor = orange)
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color(0xFF50d8ec),
+                                contentColor = Color.Black
+                            ),
+                            shape = RoundedCornerShape(16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
                         ) {
-                            Text("Description")
-                        }
-
-                        Button(
-                            onClick = {
-                                // Handle Code button click
-                                // Show pseudocode
-                                // This is where you would handle showing the pseudocode
-                            },
-                            colors = ButtonDefaults.buttonColors(backgroundColor = orange)
-                        ) {
-                            Text("Code")
+                            Text(
+                                "Description",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
 
-                    // Description or Code text section
-                    // This is where you would display the description or pseudocode
+                    if (isDescriptionVisible) {
+                        SelectionSortDescription()
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween // Align buttons side by side
+                    ) {
+                        // Time Complexity Button
+                        Button(
+                            onClick = {
+                                isButtonClicked = !isButtonClicked
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color(0xFFc0f4b8),
+                                contentColor = Color.Black
+                            ),
+                            shape = RoundedCornerShape(16.dp),
+                            modifier = Modifier
+                                .weight(0.8f)
+                        // Take up equal space
+                        ) {
+                            Text(
+                                "Time Complexity",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        // Space Complexity Button
+                        Button(
+                            onClick = {
+                                isSpaceButtonClicked = !isSpaceButtonClicked
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color(0xFFfeffbe),
+                                contentColor = Color.Black
+                            ),
+                            shape = RoundedCornerShape(16.dp),
+                            modifier = Modifier
+                                .weight(0.8f) // Take up equal space
+                        ) {
+                            Text(
+                                "Space Complexity",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
+// Show Time Complexity Graph
+                    if (isButtonClicked) {
+                        SelectionSortGraph(
+                            generateLineData = { size -> generateRandomLineData(size) },
+                            generateTheoreticalLineData = { size -> generateTheoreticalLineData(size) },
+                            inputSize = inputSize
+                        )
+
+                        Slider(
+                            value = inputSize.toFloat(),
+                            onValueChange = { newValue ->
+                                inputSize = newValue.toInt()
+                            },
+                            valueRange = 1f..50f,
+                            steps = 49,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+// Show Space Complexity Graph
+                    if (isSpaceButtonClicked) {
+                        SelectionSortGraph(
+                            generateLineData = { size -> generateSpaceComplexityData(size) }, // New function for space complexity
+                            generateTheoreticalLineData = { size -> generateTheoreticalSpaceComplexityData(size) }, // New function for theoretical space complexity
+
+                            inputSize = inputSize
+                        )
+
+                        Slider(
+                            value = inputSize.toFloat(),
+                            onValueChange = { newValue ->
+                                inputSize = newValue.toInt()
+                            },
+                            valueRange = 1f..50f,
+                            steps = 49,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
         }
     }
+    @Composable
+    fun LineChartView(
+        context: Context,
+        modifier: Modifier = Modifier,
+        configureChart: LineChart.() -> Unit = {}
+    ) {
+        AndroidView(
+            factory = { ctx ->
+                LineChart(ctx).apply(configureChart)
+            },
+            modifier = modifier.fillMaxWidth()
+        )
+    }
+
+    @Composable
+    fun SelectionSortGraph(
+        generateLineData: (Int) -> LineData,
+        generateTheoreticalLineData: (Int) -> LineData,
+        inputSize: Int
+    ) {
+        LineChartView(
+            context = LocalContext.current,
+            configureChart = {
+                val theoreticalLineData = generateTheoreticalLineData(inputSize)
+                val randomLineData = generateLineData(inputSize)
+
+                data = LineData().apply {
+                    addDataSet(theoreticalLineData.getDataSetByIndex(0))
+                    addDataSet(randomLineData.getDataSetByIndex(0))
+                }
+                this.description = description
+                invalidate()
+            },
+            modifier = Modifier.height(300.dp)
+        )
+    }
+
+    @Composable
+    fun SelectionSortDescription() {
+        val descriptionText = "Merge Sort is a divide-and-conquer algorithm that divides the array into halves, sorts them, and merges them. \n Merge sort is a stable sorting algorithm. This means that when two elements have the same key (in terms of sorting criteria), their original relative order in the input is preserved in the output."
+
+        Text(
+            text = descriptionText,
+            fontSize = 16.sp,
+            color = Color.White,
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
+        )
+    }
+
+    @Composable
+    fun SelectionSortPseudocode(currentStep: Int) {
+        val pseudocode = listOf(
+            "MergeSort(arr, left, right):",
+            "    if left > right return",
+            "    Find mid point to divide array into two halves:\nmid = (left + right) / 2",
+            "    Call mergeSort for first half:\nmergeSort(arr, left, mid)",
+            "    Call mergeSort for second half:\nmergeSort(arr, mid + 1, right)",
+            "    Merge the two halves sorted:\nmerge(arr, left, mid, right)"
+        )
+
+        val highlightedPseudocode = pseudocode.mapIndexed { index, line ->
+            if (index == currentStep) {
+                AnnotatedString.Builder().apply {
+                    withStyle(style = SpanStyle(color = Color.Yellow, fontWeight = FontWeight.Bold)) {
+                        append(line)
+                    }
+                }.toAnnotatedString()
+            } else {
+                AnnotatedString(line)
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(gray, RoundedCornerShape(8.dp))
+                .padding(16.dp)
+        ) {
+            for (line in highlightedPseudocode) {
+                Text(text = line, fontSize = 14.sp, color = Color.White)
+            }
+        }
+    }
+
+    private fun generateRandomLineData(size: Int): LineData {
+        val entries = List(size) {
+            val x = (it + 1).toFloat()
+            val y = (x * x + Random.nextFloat() * 0.2 * x * x).toFloat()
+            Entry(x, y)
+        }
+        val dataSet = LineDataSet(entries, "Test Points").apply {
+            color = Color.Blue.toArgb() // Line color
+            valueTextColor = Color.Blue.toArgb()
+            setCircleColor(Color.Green.toArgb()) // Plot points color
+            circleRadius = 4f // Plot points radius
+        }
+        return LineData(dataSet)
+    }
+
+    private fun generateTheoreticalLineData(size: Int): LineData {
+        val entries = List(size) {
+            val x = (it + 1).toFloat()
+            Entry(x, x * x)
+        }
+        val dataSet = LineDataSet(entries, "O(n^2)").apply {
+            color = Color.Red.toArgb() // Line color
+            valueTextColor = Color.Red.toArgb()
+            setCircleColor(Color.Yellow.toArgb()) // Plot points color
+            circleRadius = 4f // Plot points radius
+        }
+        return LineData(dataSet)
+    }
+
+    private fun generateSpaceComplexityData(size: Int): LineData {
+        val entries = List(size) {
+            val x = (it + 1).toFloat()
+            val y = ( 1 + Random.nextFloat() * 0.2 * 1).toFloat()
+            Entry(x, y)
+        }
+        val dataSet = LineDataSet(entries, "Test Points").apply {
+            color = Color.Blue.toArgb() // Line color
+            valueTextColor = Color.Blue.toArgb()
+            setCircleColor(Color.Green.toArgb()) // Plot points color
+            circleRadius = 4f // Plot points radius
+        }
+        return LineData(dataSet)
+    }
+
+    private fun generateTheoreticalSpaceComplexityData(size: Int): LineData {
+        val entries = List(size) {
+            val x = (it + 1).toFloat()
+            Entry(x, 1F)
+        }
+        val dataSet = LineDataSet(entries, "O(1)").apply {
+            color = Color.Red.toArgb() // Line color
+            valueTextColor = Color.Red.toArgb()
+            setCircleColor(Color.Yellow.toArgb()) // Plot points color
+            circleRadius = 4f // Plot points radius
+        }
+        return LineData(dataSet)
+    }
+
 }

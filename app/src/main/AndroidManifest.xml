@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MergeSort"
         tools:targetApi="31">
+
+        <activity
+            android:name=".ChooseAlgorithm"
+            android:exported="false"
+            android:theme="@style/Theme.MergeSort" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -23,18 +28,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity android:name=".AlgorithmsActivity"/>
-        <activity android:name=".GraphActivity"/>
-        <activity android:name=".SortActivity"/>
-        <activity android:name=".MergeSortActivity"/>
-        <activity android:name=".BubbleSortActivity"/>
-        <activity android:name=".QuickSortActivity"/>
-        <activity android:name=".SelectionSortActivity"/>
+        <activity android:name=".AlgorithmsActivity" />
+        <activity android:name=".GraphActivity" />
+        <activity android:name=".SortActivity" />
+        <activity android:name=".MergeSortActivity" />
+        <activity android:name=".BubbleSortActivity" />
+        <activity android:name=".QuickSortActivity" />
+        <activity android:name=".SelectionSortActivity" />
     </application>
 
 </manifest>
