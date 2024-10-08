@@ -20,21 +20,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kapps.mergesort.ui.theme.QuickSortTheme
 import com.kapps.mergesort.ui.theme.gray
+import com.kapps.mergesort.ui.theme.gray2
+import com.kapps.mergesort.ui.theme.magenta
 import com.kapps.mergesort.ui.theme.orange
+import android.net.Uri
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.statusBarColor = orange.toArgb()
-        window.navigationBarColor = orange.toArgb()
+        window.statusBarColor = magenta.toArgb()
+        window.navigationBarColor = magenta.toArgb()
 
         setContent {
             QuickSortTheme {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(gray)
+                        .background(gray2)
                         .padding(40.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -46,10 +49,10 @@ class MainActivity : ComponentActivity() {
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        text = "A Mobile Application for Visualizing Sorting Algorithms",
-                        fontSize = 25.sp,
+                        text = "Let's visualize Sorting Algorithms!",
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFAEC6CF),
+                        color = Color(0xFFE7E6E6),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Spacer(modifier = Modifier.height(20.dp))
@@ -59,13 +62,32 @@ class MainActivity : ComponentActivity() {
                             startActivity(intent)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = orange,
+                            backgroundColor = magenta,
                             contentColor = Color.White
                         ),
                         modifier = Modifier.defaultMinSize()
                     ) {
                         Text(
                             text = "START",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Button(
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://forms.gle/6MCqJfqmttt5RvrW8"))
+                            // Start the activity with the intent
+                            startActivity(intent)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFF0096FF),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier.defaultMinSize()
+                    ) {
+                        Text(
+                            text = "SURVEY",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )

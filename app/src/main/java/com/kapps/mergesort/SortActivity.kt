@@ -19,31 +19,33 @@ import androidx.compose.ui.unit.sp
 import com.kapps.mergesort.InsertionSortActivity
 import com.kapps.mergesort.ui.theme.QuickSortTheme
 import com.kapps.mergesort.ui.theme.gray
+import com.kapps.mergesort.ui.theme.gray2
 import com.kapps.mergesort.ui.theme.lightred
+import com.kapps.mergesort.ui.theme.magenta
 import com.kapps.mergesort.ui.theme.orange
 
 class SortActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.statusBarColor = orange.toArgb()
-        window.navigationBarColor = orange.toArgb()
+        window.statusBarColor = magenta.toArgb()
+        window.navigationBarColor = magenta.toArgb()
 
         setContent {
             QuickSortTheme {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(gray)
+                        .background(gray2)
                         .padding(40.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = "Choose your algorithm!",
-                        fontSize = 40.sp,
+                        fontSize = 30.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF668794),
+                        color = Color(0xFFE7E6E6),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Spacer(modifier = Modifier.height(20.dp))
@@ -53,7 +55,7 @@ class SortActivity : ComponentActivity() {
                             startActivity(intent)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = orange,
+                            backgroundColor = magenta,
                             contentColor = Color.White
                         ),
                         modifier = Modifier.fillMaxWidth()
@@ -72,7 +74,7 @@ class SortActivity : ComponentActivity() {
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = lightred,
-                            contentColor = Color(0xFF668794)
+                            contentColor = Color(0xFFC32F69)
                         ),
                         modifier = Modifier.fillMaxWidth()
                             .height(60.dp)
@@ -89,7 +91,7 @@ class SortActivity : ComponentActivity() {
                             startActivity(intent)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = orange,
+                            backgroundColor = magenta,
                             contentColor = Color.White
                         ),
                         modifier = Modifier.fillMaxWidth()
@@ -108,7 +110,7 @@ class SortActivity : ComponentActivity() {
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = lightred,
-                            contentColor = Color(0xFF668794)
+                            contentColor = Color(0xFFC32F69)
                         ),
                         modifier = Modifier.fillMaxWidth()
                             .height(60.dp)
@@ -125,7 +127,7 @@ class SortActivity : ComponentActivity() {
                             startActivity(intent)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = orange,
+                            backgroundColor = magenta,
                             contentColor = Color.White
                         ),
                         modifier = Modifier.fillMaxWidth()
