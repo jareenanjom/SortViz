@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kapps.mergesort.domain.BubbleSortUseCase
+import com.kapps.mergesort.domain.swap
 import com.kapps.mergesort.presentation.state.BubbleListUiItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -12,23 +13,17 @@ import java.util.*
 
 class SortViewModel(
     private val bubbleSortUseCase: BubbleSortUseCase = BubbleSortUseCase()
-) :ViewModel() {
+) : ViewModel() {
 
+    var currentStep by mutableStateOf(0)
     var listToSort = mutableStateListOf<BubbleListUiItem>()
-    //var listToSort = mutableStateListOf<Int>()
 
-    // Function to initialize the list with user input
     fun initializeListWithInput(input: String) {
-        // Clear existing list
         listToSort.clear()
-
-        // Split input by commas and trim whitespace
         val numbers = input.split(",").map { it.trim() }
-
-        // Create ListUiItem objects for each number
         for ((index, numberString) in numbers.withIndex()) {
             val rnd = Random()
-            val number = numberString.toIntOrNull() ?: continue // Skip invalid numbers
+            val number = numberString.toIntOrNull() ?: continue
             val listUiItem = BubbleListUiItem(
                 id = index,
                 isCurrentlyCompared = false,
@@ -44,34 +39,46 @@ class SortViewModel(
         }
     }
 
-
     fun startSorting() {
         viewModelScope.launch {
-            bubbleSortUseCase(listToSort.map { listUiItem ->
-                listUiItem.value
-            }.toMutableList()).collect { swapInfo ->
-                val currentItemIndex = swapInfo.currentItem
-                val nextItemIndex = currentItemIndex + 1
+            val values = listToSort.map { it.value }.toMutableList()
 
-                // Update comparison states
-                listToSort[currentItemIndex] = listToSort[currentItemIndex].copy(isCurrentlyCompared = true)
-                listToSort[nextItemIndex] = listToSort[nextItemIndex].copy(isCurrentlyCompared = true)
+            for (i in 0 until values.size-1) {
+                currentStep = 1 // Highlight the "for i = 0 to n-1:" step
+                var swapped = false
 
-                delay(500) // Wait for some time to visualize the comparison
+                for (j in 0 until values.size - i - 1) {
+                    currentStep = 3 // Highlight the inner loop step
 
-                if (swapInfo.shouldSwap) {
-                    // Perform the swap in the UI list
-                    val tempItem = listToSort[currentItemIndex]
-                    listToSort[currentItemIndex] = listToSort[nextItemIndex].copy(isCurrentlyCompared = false)
-                    listToSort[nextItemIndex] = tempItem.copy(isCurrentlyCompared = false)
-                } else {
-                    // No swap needed, just reset comparison state
-                    listToSort[currentItemIndex] = listToSort[currentItemIndex].copy(isCurrentlyCompared = false)
-                    listToSort[nextItemIndex] = listToSort[nextItemIndex].copy(isCurrentlyCompared = false)
+                    // Highlight the elements being compared
+                    listToSort.forEachIndexed { index, bubbleListUiItem ->
+                        listToSort[index] = bubbleListUiItem.copy(isCurrentlyCompared = index == j || index == j + 1)
+                    }
+                    delay(1100)
+
+                    if (values[j] > values[j + 1]) {
+                        currentStep = 5 // Highlight the comparison "if arr[j] > arr[j + 1]:"
+                        values.swap(j, j + 1)
+                        listToSort.swap(j, j + 1)
+                        swapped = true
+                        delay(800)
+                    }
                 }
 
-                delay(500) // Wait for some time to visualize the swap or no effect
+                currentStep = 8 // Highlight the end of the outer loop
+
+                if (!swapped) {
+                    break // No swaps means the list is sorted
+                }
             }
+
+            currentStep = 0 // Reset to the initial step once sorting is done
         }
+    }
+
+    private fun MutableList<BubbleListUiItem>.swap(index1: Int, index2: Int) {
+        val temp = this[index1].value
+        this[index1] = this[index1].copy(value = this[index2].value)
+        this[index2] = this[index2].copy(value = temp)
     }
 }
