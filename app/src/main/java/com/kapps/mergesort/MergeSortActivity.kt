@@ -278,6 +278,12 @@ class MergeSortActivity : ComponentActivity() {
 
 // Show Time Complexity Graph
                 if (isButtonClicked) {
+                    Text(
+                        "Time Complexity: O(nlogn) \nUse slider for number of inputs and click button again to see results",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color= Color(0xFFFFFFFF)
+                    )
                     MergeSortGraph(
                         generateLineData = { size -> generateRandomLineData(size) },
                         generateTheoreticalLineData = { size -> generateTheoreticalLineData(size) },
@@ -298,6 +304,12 @@ class MergeSortActivity : ComponentActivity() {
 
 // Show Space Complexity Graph
                 if (isSpaceButtonClicked) {
+                    Text(
+                        "Space Complexity: O(n) \nUse slider for number of inputs and click button again to see results",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color= Color(0xFFFFFFFF)
+                    )
                     MergeSortGraph(
                         generateLineData = { size -> generateSpaceComplexityData(size) }, // New function for space complexity
                         generateTheoreticalLineData = { size -> generateTheoreticalSpaceComplexityData(size) }, // New function for theoretical space complexity

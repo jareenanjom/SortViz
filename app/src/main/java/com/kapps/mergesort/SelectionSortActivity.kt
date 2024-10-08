@@ -225,10 +225,17 @@ class SelectionSortActivity : ComponentActivity() {
 
 // Show Time Complexity Graph
                     if (isButtonClicked) {
+                        Text(
+                            "Time Complexity: O(n^2) \nUse slider for number of inputs and click button again to see results",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            color= Color(0xFFFFFFFF)
+                        )
                         SelectionSortGraph(
                             generateLineData = { size -> generateRandomLineData(size) },
                             generateTheoreticalLineData = { size -> generateTheoreticalLineData(size) },
-                            inputSize = inputSize
+                            inputSize = inputSize,
+                            description= "Time Complexity O(n^2)"
                         )
 
                         Slider(
@@ -240,15 +247,23 @@ class SelectionSortActivity : ComponentActivity() {
                             steps = 49,
                             modifier = Modifier.fillMaxWidth()
                         )
+
                     }
 
 // Show Space Complexity Graph
                     if (isSpaceButtonClicked) {
+                        Text(
+                            "Space Complexity: O(1) \nUse slider for number of inputs and click button again to see results",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            color= Color(0xFFFFFFFF)
+                        )
                         SelectionSortGraph(
                             generateLineData = { size -> generateSpaceComplexityData(size) }, // New function for space complexity
                             generateTheoreticalLineData = { size -> generateTheoreticalSpaceComplexityData(size) }, // New function for theoretical space complexity
 
-                            inputSize = inputSize
+                            inputSize = inputSize,
+                            description="Space Complexity O(1)"
                         )
 
                         Slider(
@@ -283,7 +298,8 @@ class SelectionSortActivity : ComponentActivity() {
     fun SelectionSortGraph(
         generateLineData: (Int) -> LineData,
         generateTheoreticalLineData: (Int) -> LineData,
-        inputSize: Int
+        inputSize: Int,
+        description: String
     ) {
         LineChartView(
             context = LocalContext.current,
@@ -295,7 +311,7 @@ class SelectionSortActivity : ComponentActivity() {
                     addDataSet(theoreticalLineData.getDataSetByIndex(0))
                     addDataSet(randomLineData.getDataSetByIndex(0))
                 }
-                this.description = description
+
                 invalidate()
             },
             modifier = Modifier.height(300.dp)

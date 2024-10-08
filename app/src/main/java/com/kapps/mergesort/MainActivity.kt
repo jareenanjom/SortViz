@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
-                        painter = painterResource(id = R.mipmap.sortvizicon), // Replace with your logo resource
+                        painter = painterResource(id = R.mipmap.logo_sortviz_2), // Replace with your logo resource
                         contentDescription = "App Logo",
                         modifier = Modifier.size(300.dp)
                     )
