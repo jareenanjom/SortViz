@@ -46,7 +46,7 @@ class InsertionSortActivity : ComponentActivity() {
             QuickSortTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color(0xFF222222)
                 ) {
                     val viewModel = InsertionSortViewModel()
                     InsertionSortScreen(viewModel)

@@ -13,10 +13,7 @@
         android:theme="@style/Theme.MergeSort"
         tools:targetApi="31">
 
-        <activity
-            android:name=".ChooseAlgorithm"
-            android:exported="false"
-            android:theme="@style/Theme.MergeSort" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -37,6 +34,7 @@
         <activity android:name=".MergeSortActivity" />
         <activity android:name=".BubbleSortActivity" />
         <activity android:name=".QuickSortActivity" />
+        <activity android:name=".InsertionSortActivity" />
         <activity android:name=".SelectionSortActivity" />
     </application>
 

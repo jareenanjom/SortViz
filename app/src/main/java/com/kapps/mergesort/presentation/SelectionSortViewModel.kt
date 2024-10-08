@@ -15,11 +15,13 @@ import java.util.*
 class SelectionSortViewModel(
     private val selectionSortUseCase: SelectionSortUseCase = SelectionSortUseCase()
 ) : ViewModel() {
-    private fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
+    /*private fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
         val temp = this[index1]
         this[index1] = this[index2]
         this[index2] = temp
-    }
+    }*/
+
+    var currentStep by mutableStateOf(0)
     var listToSort = mutableStateListOf<BubbleListUiItem>()
 
     fun initializeListWithInput(input: String) {
@@ -45,21 +47,48 @@ class SelectionSortViewModel(
 
     fun startSorting() {
         viewModelScope.launch {
-            selectionSortUseCase(listToSort.map { it.value }.toMutableList()).collect { swapInfo ->
-                val currentItemIndex = swapInfo.currentItem
-                val minItemIndex = swapInfo.minItemIndex
+            val values = listToSort.map { it.value }.toMutableList()
 
-                // Highlight the currently compared item
-                listToSort.forEachIndexed { index, bubbleListUiItem ->
-                    listToSort[index] = bubbleListUiItem.copy(isCurrentlyCompared = index == currentItemIndex || index == minItemIndex)
+            for (i in 0 until values.size - 1) {
+                currentStep = 1 // Highlight the "for i = 0 to n-1:" step
+                var minIndex = i
+                delay(800)
+
+                for (j in i + 1 until values.size) {
+                    currentStep = 3 // Highlight the "for j = i+1 to n:" step
+
+                    // Highlight the elements being compared
+                    listToSort.forEachIndexed { index, bubbleListUiItem ->
+                        listToSort[index] = bubbleListUiItem.copy(isCurrentlyCompared = index == i || index == j)
+                    }
+                    delay(1100)
+
+                    if (values[j] < values[minIndex]) {
+                        minIndex = j
+                    }
+                    currentStep = 5 // Highlight the comparison "if arr[j] < arr[minIndex]:"
                 }
 
-                // Perform the swap if necessary
-                if (currentItemIndex != minItemIndex) {
-                    listToSort.swap(currentItemIndex, minItemIndex)
+                if (minIndex != i) {
+                    currentStep = 7 // Highlight the "swap(arr[i], arr[minIndex])" step
+                    values.swap(i, minIndex)
+                    listToSort.swap(i, minIndex)
+                    delay(800)
                 }
+
+                currentStep = 8 // Highlight the end of the outer loop
             }
+
+            currentStep = 0 // Reset to the initial step once sorting is done
         }
     }
+
+
+    private fun MutableList<BubbleListUiItem>.swap(index1: Int, index2: Int) {
+        val temp = this[index1].value
+        this[index1] = this[index1].copy(value = this[index2].value)
+        this[index2] = this[index2].copy(value = temp)
+    }
+
 
 }

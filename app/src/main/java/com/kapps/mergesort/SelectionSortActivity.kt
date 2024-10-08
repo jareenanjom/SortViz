@@ -94,6 +94,7 @@ class SelectionSortActivity : ComponentActivity() {
 
                     Button(onClick = {
                         sortViewModel.startSorting()
+
                     }, shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFF00FF))
                     ) {
@@ -103,6 +104,7 @@ class SelectionSortActivity : ComponentActivity() {
                             fontSize = 22.sp
                         )
                     }
+
                     LazyRow(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
@@ -135,9 +137,12 @@ class SelectionSortActivity : ComponentActivity() {
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 22.sp
                                 )
+
+
                             }
                         }
                     }
+                    SelectionSortPseudocode(currentStep = sortViewModel.currentStep)
                     var isDescriptionVisible by remember { mutableStateOf(false) }
                     var isButtonClicked by remember { mutableStateOf(false) }
                     var isSpaceButtonClicked by remember { mutableStateOf(false) }
@@ -299,7 +304,7 @@ class SelectionSortActivity : ComponentActivity() {
 
     @Composable
     fun SelectionSortDescription() {
-        val descriptionText = "Merge Sort is a divide-and-conquer algorithm that divides the array into halves, sorts them, and merges them. \n Merge sort is a stable sorting algorithm. This means that when two elements have the same key (in terms of sorting criteria), their original relative order in the input is preserved in the output."
+        val descriptionText = "Selection Sort repeatedly finds the smallest element from the unsorted part of the array and swaps it with the first unsorted element. It divides the array into sorted and unsorted parts, growing the sorted portion with each pass. \nSelection Sort is not stable, meaning it may not preserve the relative order of equal elements."
 
         Text(
             text = descriptionText,
@@ -312,14 +317,17 @@ class SelectionSortActivity : ComponentActivity() {
     @Composable
     fun SelectionSortPseudocode(currentStep: Int) {
         val pseudocode = listOf(
-            "MergeSort(arr, left, right):",
-            "    if left > right return",
-            "    Find mid point to divide array into two halves:\nmid = (left + right) / 2",
-            "    Call mergeSort for first half:\nmergeSort(arr, left, mid)",
-            "    Call mergeSort for second half:\nmergeSort(arr, mid + 1, right)",
-            "    Merge the two halves sorted:\nmerge(arr, left, mid, right)"
+            "SelectionSort(arr):",
+            "    for i = 0 to n-1:",
+            "        minIndex = i",
+            "        for j = i+1 to n:",
+            "            if arr[j] < arr[minIndex]:",
+            "                minIndex = j",
+            "        if minIndex != i:",
+            "            swap(arr[i], arr[minIndex])"
         )
 
+        // Build the pseudocode with highlighted steps
         val highlightedPseudocode = pseudocode.mapIndexed { index, line ->
             if (index == currentStep) {
                 AnnotatedString.Builder().apply {
@@ -332,17 +340,19 @@ class SelectionSortActivity : ComponentActivity() {
             }
         }
 
+        // Display the pseudocode
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .background(gray, RoundedCornerShape(8.dp))
                 .padding(16.dp)
         ) {
             for (line in highlightedPseudocode) {
-                Text(text = line, fontSize = 14.sp, color = Color.White)
+                Text(text = line, fontSize = 16.sp, color = Color.White)
             }
         }
     }
+
 
     private fun generateRandomLineData(size: Int): LineData {
         val entries = List(size) {
