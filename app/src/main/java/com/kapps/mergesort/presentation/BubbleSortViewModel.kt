@@ -48,7 +48,7 @@ class SortViewModel(
                 var swapped = false
 
                 for (j in 0 until values.size - i - 1) {
-                    currentStep = 3 // Highlight the inner loop step
+                    currentStep = 2 // Highlight the inner loop step
 
                     // Highlight the elements being compared
                     listToSort.forEachIndexed { index, bubbleListUiItem ->
@@ -57,15 +57,16 @@ class SortViewModel(
                     delay(1100)
 
                     if (values[j] > values[j + 1]) {
-                        currentStep = 5 // Highlight the comparison "if arr[j] > arr[j + 1]:"
+                        currentStep = 3 // Highlight the comparison "if arr[j] > arr[j + 1]:"
                         values.swap(j, j + 1)
-                        listToSort.swap(j, j + 1)
+                        listToSort.bubbleswap(j, j + 1)
                         swapped = true
                         delay(800)
+currentStep = 4
                     }
                 }
 
-                currentStep = 8 // Highlight the end of the outer loop
+                currentStep = 5 // Highlight the end of the outer loop
 
                 if (!swapped) {
                     break // No swaps means the list is sorted
@@ -76,7 +77,7 @@ class SortViewModel(
         }
     }
 
-    private fun MutableList<BubbleListUiItem>.swap(index1: Int, index2: Int) {
+    private fun MutableList<BubbleListUiItem>.bubbleswap(index1: Int, index2: Int) {
         val temp = this[index1].value
         this[index1] = this[index1].copy(value = this[index2].value)
         this[index2] = this[index2].copy(value = temp)

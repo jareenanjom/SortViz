@@ -109,13 +109,13 @@ class BubbleSortActivity : ComponentActivity() {
 
                     Button(onClick = {
                         //sortViewModel.startSorting()
-                       //sortViewModel.listToSort =
-                           //inputText.split(",").map { it.toInt() }.toMutableList()
+                        //sortViewModel.listToSort =
+                        //inputText.split(",").map { it.toInt() }.toMutableList()
 
 
 
                         sortViewModel.startSorting()
-                        bubbleSortViewPseudo.startSortingPseudo()
+                        //bubbleSortViewPseudo.startSortingPseudo()
                     }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Magenta)
                     ) {
                         Text(
@@ -167,7 +167,7 @@ class BubbleSortActivity : ComponentActivity() {
                             .weight(0.6f)
                             .padding(5.dp)
                     ) {
-                        BubbleSortPseudocode(currentStep = currentPseudocodeStep)
+                        BubbleSortPseudocode(currentStep = sortViewModel.currentStep)
                     }
                     var isButtonClicked by remember { mutableStateOf(false) }
                     var inputSize by remember { mutableStateOf(10) }
@@ -424,16 +424,12 @@ class BubbleSortActivity : ComponentActivity() {
     @Composable
     fun BubbleSortPseudocode(currentStep: Int) {
         val pseudocode = listOf(
-            " void bubbleSort(int arr[], int n) {",
-            "     int i, j;",
-            "     for (i = 0; i < n-1; i++) {",
-            "         for (j = 0; j < n-i-1; j++) {",
-            "             if (arr[j] > arr[j + 1]) {",
-            "                 swap(arr[j], arr[j+1])",
-            "             }",
-            "         }",
-            "     }",
-            " }"
+            "BubbleSort(arr):",
+            "    for i = 0 to n-1:",
+            "        for j = i+1 to n:",
+            "            if arr[j] > arr[j+1]:",
+            "            swap(arr[j], arr[j+1])",
+            "end"
         )
 
 

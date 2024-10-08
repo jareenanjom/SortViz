@@ -4,10 +4,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kapps.mergesort.domain.BubbleSortUseCase
+import com.kapps.mergesort.com.kapps.mergesort.presentation.state.SelectionListUiItem
 import com.kapps.mergesort.domain.SelectionSortUseCase
 import com.kapps.mergesort.domain.swap
-import com.kapps.mergesort.presentation.state.BubbleListUiItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -22,7 +21,7 @@ class SelectionSortViewModel(
     }*/
 
     var currentStep by mutableStateOf(0)
-    var listToSort = mutableStateListOf<BubbleListUiItem>()
+    var listToSort = mutableStateListOf<SelectionListUiItem>()
 
     fun initializeListWithInput(input: String) {
         listToSort.clear()
@@ -30,7 +29,7 @@ class SelectionSortViewModel(
         for ((index, numberString) in numbers.withIndex()) {
             val rnd = Random()
             val number = numberString.toIntOrNull() ?: continue
-            val listUiItem = BubbleListUiItem(
+            val listUiItem = SelectionListUiItem(
                 id = index,
                 isCurrentlyCompared = false,
                 value = number,
@@ -72,7 +71,7 @@ class SelectionSortViewModel(
                 if (minIndex != i) {
                     currentStep = 7 // Highlight the "swap(arr[i], arr[minIndex])" step
                     values.swap(i, minIndex)
-                    listToSort.swap(i, minIndex)
+                    listToSort.selectionswap(i, minIndex)
                     delay(800)
                 }
 
@@ -84,7 +83,7 @@ class SelectionSortViewModel(
     }
 
 
-    private fun MutableList<BubbleListUiItem>.swap(index1: Int, index2: Int) {
+    private fun MutableList<SelectionListUiItem>.selectionswap(index1: Int, index2: Int) {
         val temp = this[index1].value
         this[index1] = this[index1].copy(value = this[index2].value)
         this[index2] = this[index2].copy(value = temp)

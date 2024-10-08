@@ -7,38 +7,43 @@ import kotlinx.coroutines.flow.flow
 
 class BubbleSortUseCase {
 
-    operator fun invoke(list:MutableList<Int>) : Flow<BubbleSortInfo>  = flow{
+    operator fun invoke(arr: MutableList<Int>): Flow<BubbleSortInfo> = flow {
+        val n = arr.size
 
-        var listSizeToCompare = list.size-1
-        while(listSizeToCompare>=1){
-            var innerIterator = 0
-            while(innerIterator<listSizeToCompare){
-                val currentListItem = list[innerIterator]
-                val nextListItem = list[innerIterator+1]
+        for (i in 0 until n - 1) {
+            var swapped = false
+
+            // Iterate through the list, comparing adjacent elements
+            for (j in 0 until n - i - 1) {
                 emit(
-                    BubbleSortInfo(currentItem = innerIterator, shouldSwap = false, hadNoEffect = false)
+                    BubbleSortInfo(currentItem = j, shouldSwap = false, hadNoEffect = false)
                 )
                 delay(800)
-                if(currentListItem > nextListItem){
-                    list.swap(innerIterator,innerIterator+1)
+
+                if (arr[j] > arr[j + 1]) {
+                    // Swap if the current item is greater than the next item
+                    val temp = arr[j]
+                    arr[j] = arr[j + 1]
+                    arr[j + 1] = temp
+                    swapped = true
+
                     emit(
-                        BubbleSortInfo(currentItem = innerIterator, shouldSwap = true, hadNoEffect = false)
+                        BubbleSortInfo(currentItem = j, shouldSwap = true, hadNoEffect = false)
                     )
-                }else{
+                } else {
+                    // No swap was needed
                     emit(
-                        BubbleSortInfo(currentItem = innerIterator, shouldSwap = false, hadNoEffect = true)
+                        BubbleSortInfo(currentItem = j, shouldSwap = false, hadNoEffect = true)
                     )
                 }
+
                 delay(500)
-                innerIterator +=1
             }
-            listSizeToCompare -= 1
+
+            // If no two elements were swapped, the list is already sorted
+            if (!swapped) {
+                break
+            }
         }
     }
-}
-
-fun <T> MutableList<T>.swap(indexOne:Int, indexTwo:Int){
-    val tempOne = this[indexOne]
-    this[indexOne] = this[indexTwo]
-    this[indexTwo] = tempOne
 }
